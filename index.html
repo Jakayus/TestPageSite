@@ -3,32 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I Love Bachata</title>
+    <title>Bachata Passion - Dance, Love, Live</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #ff6b6b, #feca57);
-            font-family: 'Arial', sans-serif;
+            box-sizing: border-box;
         }
         
-        .container {
-            text-align: center;
-            padding: 40px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-        
-        h1 {
-            font-size: 4rem;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
             color: #333;
-            margin: 0;
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #ff9ff3);
+            min-height: 100vh;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            color: #e74c3c;
+        }
+        
+        .hero {
+            padding: 120px 2rem 80px;
+            text-align: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .hero-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #333;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
         }
         
@@ -43,12 +95,6 @@
             100% { transform: scale(1); }
         }
         
-        .subtitle {
-            font-size: 1.2rem;
-            color: #666;
-            margin-top: 20px;
-        }
-        
         .dancers {
             margin: 30px 0;
             font-size: 6rem;
@@ -60,31 +106,128 @@
             100% { transform: rotate(5deg) scale(1.05); }
         }
         
-        .video-container {
-            margin-top: 40px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+        .subtitle {
+            font-size: 1.4rem;
+            color: #666;
+            margin-bottom: 2rem;
+            font-style: italic;
         }
         
-        .video-container iframe {
+        .description {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            line-height: 1.8;
+        }
+        
+        .video-section {
+            padding: 80px 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .video-title {
+            font-size: 2.5rem;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .video-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .video-wrapper iframe {
             border-radius: 10px;
+            width: 100%;
+            max-width: 560px;
+            height: 315px;
+        }
+        
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 80px;
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .dancers {
+                font-size: 4rem;
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .hero {
+                padding: 100px 1rem 60px;
+            }
+            
+            .hero-content {
+                padding: 40px 20px;
+            }
+            
+            .video-wrapper iframe {
+                height: 200px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>I <span class="heart">♥</span> Bachata</h1>
-        <div class="dancers">💃🕺</div>
-        <p class="subtitle">The rhythm of love and passion</p>
-    </div>
-    
-    <div class="video-container">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/D6Ju9CyOB-I?si=2xLCCO-P6EIsppVs" 
-                title="YouTube video player" frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Bachata Passion</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="moves.html">Moves</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>I <span class="heart">♥</span> Bachata</h1>
+            <div class="dancers">💃🕺</div>
+            <p class="subtitle">The rhythm of love and passion</p>
+            <p class="description">
+                Welcome to the world of Bachata - where music meets soul, where hearts connect through dance, 
+                and where every step tells a story of romance and rhythm. Join us on this passionate journey.
+            </p>
+        </div>
+    </section>
+
+    <section class="video-section">
+        <div class="video-container">
+            <h2 class="video-title">Feel the Rhythm</h2>
+            <div class="video-wrapper">
+                <iframe src="https://www.youtube.com/embed/D6Ju9CyOB-I?si=2xLCCO-P6EIsppVs" 
+                        title="YouTube video player" frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>&copy; 2024 Bachata Passion. Dance with your heart. ♥</p>
+    </footer>
 </body>
 </html>
