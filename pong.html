@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game | Bachata Passion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #4facfe, #00f2fe, #43e97b);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-links a:hover, .nav-links a.active {
+            color: #e74c3c;
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: #333;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+        
+        .game-container {
+            padding: 100px 2rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .game-header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .game-title {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        
+        .game-subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+        
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 400px;
+            margin: 0 auto;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .canvas-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            margin-bottom: 2rem;
+        }
+        
+        #gameCanvas {
+            border: 3px solid #333;
+            border-radius: 10px;
+            background: #000;
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .controls h3 {
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .controls p {
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .game-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+        
+        .game-button {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        .game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+        
+        .game-button:active {
+            transform: translateY(0);
+        }
+        
+        .game-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+        
+        /* Mobile Touch Controls */
+        .mobile-controls {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+        
+        .touch-area {
+            height: 60px;
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            user-select: none;
+            touch-action: none;
+        }
+        
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                right: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 2rem;
+                gap: 2rem;
+                transition: right 0.3s ease;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li {
+                margin: 0;
+            }
+            
+            .nav-links a {
+                font-size: 1.2rem;
+                padding: 1rem;
+                display: block;
+                width: 200px;
+                text-align: center;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links a:hover {
+                background: rgba(231, 76, 60, 0.1);
+            }
+            
+            .nav-container {
+                padding: 0 1rem;
+            }
+            
+            .game-container {
+                padding: 90px 1rem 1rem;
+            }
+            
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .canvas-container {
+                padding: 1rem;
+            }
+            
+            .mobile-controls {
+                display: block;
+            }
+            
+            .game-container {
+                padding-bottom: 100px;
+            }
+            
+            #gameCanvas {
+                width: 100%;
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.8rem;
+            }
+            
+            .score-board {
+                font-size: 1.2rem;
+            }
+            
+            .game-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .game-button {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+        
+        @media (min-width: 1024px) {
+            #gameCanvas {
+                width: 800px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">Bachata Passion</div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" onclick="closeMenu()">Home</a></li>
+                <li><a href="moves.html" onclick="closeMenu()">Moves</a></li>
+                <li><a href="pong.html" class="active" onclick="closeMenu()">Pong</a></li>
+                <li><a href="#about" onclick="closeMenu()">About</a></li>
+                <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🏓 Pong Game</h1>
+            <p class="game-subtitle">Classic arcade fun with a bachata twist!</p>
+            <div class="score-board">
+                <div>You: <span id="playerScore">0</span></div>
+                <div>🎯</div>
+                <div>Computer: <span id="computerScore">0</span></div>
+            </div>
+        </div>
+
+        <div class="canvas-container">
+            <canvas id="gameCanvas" width="800" height="400"></canvas>
+        </div>
+
+        <div class="controls">
+            <h3>How to Play</h3>
+            <p><strong>Desktop:</strong> Move your mouse up and down to control your paddle</p>
+            <p><strong>Mobile:</strong> Touch and drag on the blue area at the bottom</p>
+            <p><strong>Goal:</strong> First to 10 points wins!</p>
+            
+            <div class="game-buttons">
+                <button class="game-button" onclick="startGame()" id="startBtn">Start Game</button>
+                <button class="game-button" onclick="pauseGame()" id="pauseBtn" disabled>Pause</button>
+                <button class="game-button" onclick="resetGame()" id="resetBtn">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-controls">
+        <div class="touch-area" id="touchArea">
+            Touch here to control your paddle
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Bachata Passion. Dance with your heart. ♥</p>
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const playerScoreEl = document.getElementById('playerScore');
+        const computerScoreEl = document.getElementById('computerScore');
+        const startBtn = document.getElementById('startBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const touchArea = document.getElementById('touchArea');
+
+        let gameRunning = false;
+        let gamePaused = false;
+        let animationId;
+
+        // Game objects
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 8,
+            speedX: 5,
+            speedY: 3,
+            maxSpeed: 8
+        };
+
+        const playerPaddle = {
+            x: 20,
+            y: canvas.height / 2 - 50,
+            width: 15,
+            height: 100,
+            speed: 8
+        };
+
+        const computerPaddle = {
+            x: canvas.width - 35,
+            y: canvas.height / 2 - 50,
+            width: 15,
+            height: 100,
+            speed: 6
+        };
+
+        const game = {
+            playerScore: 0,
+            computerScore: 0,
+            winningScore: 10
+        };
+
+        // Mouse and touch controls
+        let mouseY = canvas.height / 2;
+        let touchY = canvas.height / 2;
+        let isTouching = false;
+
+        // Event listeners
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            mouseY = (e.clientY - rect.top) * (canvas.height / rect.height);
+        });
+
+        // Touch controls
+        touchArea.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            isTouching = true;
+            updateTouchPosition(e.touches[0]);
+        });
+
+        touchArea.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (isTouching) {
+                updateTouchPosition(e.touches[0]);
+            }
+        });
+
+        touchArea.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            isTouching = false;
+        });
+
+        function updateTouchPosition(touch) {
+            const rect = touchArea.getBoundingClientRect();
+            const normalizedY = (touch.clientY - rect.top) / rect.height;
+            touchY = normalizedY * canvas.height;
+        }
+
+        function resetBall() {
+            ball.x = canvas.width / 2;
+            ball.y = canvas.height / 2;
+            ball.speedX = (Math.random() > 0.5 ? 1 : -1) * 5;
+            ball.speedY = (Math.random() - 0.5) * 6;
+        }
+
+        function updatePaddles() {
+            // Player paddle follows mouse or touch
+            const targetY = window.innerWidth <= 768 ? touchY : mouseY;
+            const paddleCenter = playerPaddle.y + playerPaddle.height / 2;
+            
+            if (Math.abs(targetY - paddleCenter) > 5) {
+                if (targetY > paddleCenter) {
+                    playerPaddle.y += playerPaddle.speed;
+                } else {
+                    playerPaddle.y -= playerPaddle.speed;
+                }
+            }
+
+            // Keep player paddle in bounds
+            if (playerPaddle.y < 0) playerPaddle.y = 0;
+            if (playerPaddle.y > canvas.height - playerPaddle.height) {
+                playerPaddle.y = canvas.height - playerPaddle.height;
+            }
+
+            // Computer paddle AI
+            const computerCenter = computerPaddle.y + computerPaddle.height / 2;
+            const ballCenter = ball.y;
+            
+            if (ballCenter > computerCenter + 10) {
+                computerPaddle.y += computerPaddle.speed;
+            } else if (ballCenter < computerCenter - 10) {
+                computerPaddle.y -= computerPaddle.speed;
+            }
+
+            // Keep computer paddle in bounds
+            if (computerPaddle.y < 0) computerPaddle.y = 0;
+            if (computerPaddle.y > canvas.height - computerPaddle.height) {
+                computerPaddle.y = canvas.height - computerPaddle.height;
+            }
+        }
+
+        function updateBall() {
+            ball.x += ball.speedX;
+            ball.y += ball.speedY;
+
+            // Ball collision with top and bottom walls
+            if (ball.y - ball.radius <= 0 || ball.y + ball.radius >= canvas.height) {
+                ball.speedY = -ball.speedY;
+            }
+
+            // Ball collision with player paddle
+            if (ball.x - ball.radius <= playerPaddle.x + playerPaddle.width &&
+                ball.y >= playerPaddle.y && ball.y <= playerPaddle.y + playerPaddle.height) {
+                ball.speedX = Math.abs(ball.speedX);
+                
+                // Add some angle based on where the ball hits the paddle
+                const hitPos = (ball.y - playerPaddle.y) / playerPaddle.height;
+                ball.speedY = (hitPos - 0.5) * 8;
+                
+                // Increase speed slightly
+                ball.speedX = Math.min(ball.speedX * 1.05, ball.maxSpeed);
+            }
+
+            // Ball collision with computer paddle
+            if (ball.x + ball.radius >= computerPaddle.x &&
+                ball.y >= computerPaddle.y && ball.y <= computerPaddle.y + computerPaddle.height) {
+                ball.speedX = -Math.abs(ball.speedX);
+                
+                // Add some angle based on where the ball hits the paddle
+                const hitPos = (ball.y - computerPaddle.y) / computerPaddle.height;
+                ball.speedY = (hitPos - 0.5) * 8;
+                
+                // Increase speed slightly
+                ball.speedX = Math.max(ball.speedX * 1.05, -ball.maxSpeed);
+            }
+
+            // Score detection
+            if (ball.x < 0) {
+                game.computerScore++;
+                computerScoreEl.textContent = game.computerScore;
+                resetBall();
+                checkWin();
+            } else if (ball.x > canvas.width) {
+                game.playerScore++;
+                playerScoreEl.textContent = game.playerScore;
+                resetBall();
+                checkWin();
+            }
+        }
+
+        function checkWin() {
+            if (game.playerScore >= game.winningScore) {
+                alert('🎉 You Win! Great job!');
+                resetGame();
+            } else if (game.computerScore >= game.winningScore) {
+                alert('😅 Computer Wins! Try again!');
+                resetGame();
+            }
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw center line
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw paddles
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(playerPaddle.x, playerPaddle.y, playerPaddle.width, playerPaddle.height);
+            ctx.fillRect(computerPaddle.x, computerPaddle.y, computerPaddle.width, computerPaddle.height);
+
+            // Draw ball
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+        }
+
+        function gameLoop() {
+            if (!gameRunning || gamePaused) return;
+
+            updatePaddles();
+            updateBall();
+            draw();
+
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            if (!gameRunning) {
+                gameRunning = true;
+                gamePaused = false;
+                startBtn.textContent = 'Playing...';
+                startBtn.disabled = true;
+                pauseBtn.disabled = false;
+                gameLoop();
+            }
+        }
+
+        function pauseGame() {
+            if (gameRunning) {
+                gamePaused = !gamePaused;
+                pauseBtn.textContent = gamePaused ? 'Resume' : 'Pause';
+                if (!gamePaused) {
+                    gameLoop();
+                }
+            }
+        }
+
+        function resetGame() {
+            gameRunning = false;
+            gamePaused = false;
+            cancelAnimationFrame(animationId);
+            
+            // Reset game state
+            game.playerScore = 0;
+            game.computerScore = 0;
+            playerScoreEl.textContent = '0';
+            computerScoreEl.textContent = '0';
+            
+            // Reset positions
+            playerPaddle.y = canvas.height / 2 - 50;
+            computerPaddle.y = canvas.height / 2 - 50;
+            resetBall();
+            
+            // Reset buttons
+            startBtn.textContent = 'Start Game';
+            startBtn.disabled = false;
+            pauseBtn.textContent = 'Pause';
+            pauseBtn.disabled = true;
+            
+            // Draw initial state
+            draw();
+        }
+
+        // Navigation functions
+        function toggleMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+        
+        function closeMenu() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.remove('active');
+        }
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const navLinks = document.querySelector('.nav-links');
+            const hamburger = document.querySelector('.hamburger');
+            
+            if (!navLinks.contains(event.target) && !hamburger.contains(event.target)) {
+                navLinks.classList.remove('active');
+            }
+        });
+
+        // Initialize game
+        draw();
+    </script>
+</body>
+</html>
